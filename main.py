@@ -77,7 +77,7 @@ def rename_media_files(input_path, output_path=None, keep_original=False, force=
                         if os.path.exists(new_filepath) and not force:
                             print(f"Skipping {filename}: File already exists. New name: {new_filepath}")
                             # os.remove(filepath)
-                            os.rename(filepath, "___" + new_filepath)
+                            os.rename(filepath, "__fae__" + new_filepath)
                         else:
                             os.rename(filepath, new_filepath)
                         
