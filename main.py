@@ -75,9 +75,9 @@ def rename_media_files(input_path, output_path=None, keep_original=False, force=
                 try:
                     datesfound = []
                     dtparse_format = "%Y:%m:%d %H:%M:%S"
-                    # date = extract_timestamp_from_filename(filepath)
-                    # parsed_date = datetime.strptime(date, dtparse_format)
-                    # datesfound.append(parsed_date)
+                    date = extract_timestamp_from_filename(filepath)
+                    parsed_date = datetime.strptime(date, dtparse_format)
+                    datesfound.append(parsed_date)
 
                     if json_data is None:
                         date = extract_timestamp_from_filename(filepath)
