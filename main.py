@@ -73,25 +73,43 @@ def rename_media_files(input_path, output_path=None, keep_original=False, force=
 
             if os.path.getsize(filepath) > 0 and "mrp" not in filepath:
                 try:
+                    datesfound = []
                     dtparse_format = "%Y:%m:%d %H:%M:%S"
+                    # date = extract_timestamp_from_filename(filepath)
+                    # parsed_date = datetime.strptime(date, dtparse_format)
+                    # datesfound.append(parsed_date)
+
                     if json_data is None:
                         date = extract_timestamp_from_filename(filepath)
-                    elif 'DateTimeOriginal' in json_data:
+                        parsed_date = datetime.strptime(date, dtparse_format)
+                        datesfound.append(parsed_date)
+                    if json_data and 'DateTimeOriginal' in json_data and json_data['DateTimeOriginal'] != "":
                         date = json_data['DateTimeOriginal']
-                    elif 'CreateDate' in json_data:
+                        print(date)
+                        parsed_date = datetime.strptime(date, dtparse_format)
+                        datesfound.append(parsed_date)
+                    if json_data and 'CreateDate' in json_data and json_data['CreateDate'] != "":
                         date = json_data['CreateDate']
-                    elif 'ModifyDate' in json_data:
+                        parsed_date = datetime.strptime(date, dtparse_format)
+                        datesfound.append(parsed_date)
+                    if json_data and 'ModifyDate' in json_data and json_data['ModifyDate'] != "":
                         date = json_data['ModifyDate']
-                    elif 'FileModifyDate' in json_data:
+                        parsed_date = datetime.strptime(date, dtparse_format)
+                        datesfound.append(parsed_date)
+                    if json_data and 'FileModifyDate' in json_data and json_data['FileModifyDate'] != "":
                         date = json_data['FileModifyDate'] #2025:03:02 23:03:50+00:00
                         dtparse_format = "%Y:%m:%d %H:%M:%S%z"
-
-                    else:
-                        date = extract_timestamp_from_filename(filepath)
-                    
-                    # parsed_date = parse(date)
-                    # Custom parsing format
-                    parsed_date = datetime.strptime(date, dtparse_format)
+                        parsed_date = datetime.strptime(date, dtparse_format).replace(tzinfo=None)
+                        datesfound.append(parsed_date)
+                    if json_data and 'CreationDate' in json_data and json_data['CreationDate'] != "":
+                        date = json_data['CreationDate'] #2025:03:02 23:03:50+00:00
+                        dtparse_format = "%Y:%m:%d %H:%M:%S%z"
+                        parsed_date = datetime.strptime(date, dtparse_format).replace(tzinfo=None)
+                        datesfound.append(parsed_date)
+                  
+                        
+                    #Find the oldest date in datesfound list and use it as the new filename                                    
+                    parsed_date = min(datesfound)  
 
                     new_filename = parsed_date.strftime("%Y%m%d_%H%M%S") + "_mrp" + os.path.splitext(filename)[1]
                     new_filepath = os.path.join(output_path, new_filename)
